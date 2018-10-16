@@ -5,7 +5,7 @@ import './index.scss';
 import { analytics } from '../core';
 import settingsPage from './html/index/settings.html';
 
-const handleFieldChange = (entry, setting, e) => {
+function handleFieldChange(entry, setting, e) {
   if (setting.subsettings && setting.subsettings.length > 0) {
     entry.changeValue(setting.key, e.target.checked);
   } else if (setting.type === 'checkbox') {
@@ -20,9 +20,17 @@ const handleFieldChange = (entry, setting, e) => {
   if (setting.subsettings && setting.subsettings.length > 0) {
     $(`[data-parent-feature-setting-id='${entry.id}:${setting.key}']`).toggle();
   }
-};
+}
 
-const renderSettingsEntry = (setting, entry) => {
+function renderSettingsEntry(entry) {
+  const checked = entry.isActive ? 'checked="checked"' : '';
+  return `<h3 class="main-setting">
+    <input type="checkbox" id="${entry.id}" data-feature-id="${entry.id}" ${checked} />
+    <label for="${entry.id}">${entry.name}</label>
+  </h3>`;
+}
+
+function renderSubsetting(setting, entry) {
   const inputId = `${entry.id}:${setting.key}`;
   return `<div class="setting">
     ${setting.type !== 'checkbox' ? `<label for="${inputId}">${setting.label}</label>` : ''}
@@ -35,7 +43,38 @@ const renderSettingsEntry = (setting, entry) => {
     />
     ${setting.type === 'checkbox' ? `<label for="${inputId}">${setting.label}</label>` : ''}
   </div>`;
-};
+}
+
+function renderSubsettings(entry) {
+  let settingsFields = '';
+  for (const setting of entry.settings) {
+    if (setting.subsettings.length > 0) {
+      settingsFields += renderSubsetting(setting, entry);
+
+      const settingActive = setting.value ? 'block' : 'none';
+      settingsFields += `<div data-parent-feature-setting-id="${entry.id}:${setting.key}" style="display: ${settingActive}">`;
+      for (const subsetting of setting.subsettings) {
+        settingsFields += renderSubsetting(subsetting, entry);
+      }
+      settingsFields += '</div>';
+    } else {
+      settingsFields += renderSubsetting(setting, entry);
+    }
+  }
+  const featureActive = entry.isActive ? 'block' : 'none';
+  const panel = $(`<div class="feature-settings"><div data-feature-settings="${entry.id}" style="display: ${featureActive};">${settingsFields}</div></div>`);
+  for (const setting of entry.settings) {
+    $(`[data-feature-setting-id='${entry.id}:${setting.key}']`, panel).on('change', (e) => {
+      handleFieldChange(entry, setting, e);
+    });
+    for (const subsetting of setting.subsettings) {
+      $(`[data-feature-setting-id='${entry.id}:${subsetting.key}']`, panel).on('change', (e) => {
+        handleFieldChange(entry, subsetting, e);
+      });
+    }
+  }
+  return panel;
+}
 
 export default (settings) => {
   const html = settingsPage;
@@ -45,39 +84,9 @@ export default (settings) => {
   const settingsPanel = $('.futsettings #settingspanel');
 
   for (const entry of settings.getEntries()) {
-    const checked = entry.isActive ? 'checked="checked"' : '';
-    settingsPanel.append(`<h3 class="main-setting">
-      <input type="checkbox" id="${entry.id}" data-feature-id="${entry.id}" ${checked} />
-      <label for="${entry.id}">${entry.name}</label>
-    </h3>`);
-    let settingsFields = '';
+    settingsPanel.append(renderSettingsEntry(entry));
     if (entry.settings && entry.settings.length > 0) {
-      for (const setting of entry.settings) {
-        if (setting.subsettings.length > 0) {
-          settingsFields += renderSettingsEntry(setting, entry);
-
-          const settingActive = setting.value ? 'block' : 'none';
-          settingsFields += `<div data-parent-feature-setting-id="${entry.id}:${setting.key}" style="display: ${settingActive}">`;
-          for (const subsetting of setting.subsettings) {
-            settingsFields += renderSettingsEntry(subsetting, entry);
-          }
-          settingsFields += '</div>';
-        } else {
-          settingsFields += renderSettingsEntry(setting, entry);
-        }
-      }
-      const featureActive = entry.isActive ? 'block' : 'none';
-      settingsPanel.append(`<div class="feature-settings"><div data-feature-settings="${entry.id}" style="display: ${featureActive};">${settingsFields}</div></div>`);
-      for (const setting of entry.settings) {
-        $(`[data-feature-setting-id='${entry.id}:${setting.key}']`).on('change', (e) => {
-          handleFieldChange(entry, setting, e);
-        });
-        for (const subsetting of setting.subsettings) {
-          $(`[data-feature-setting-id='${entry.id}:${subsetting.key}']`).on('change', (e) => {
-            handleFieldChange(entry, subsetting, e);
-          });
-        }
-      }
+      settingsPanel.append(renderSubsettings(entry));
     } else {
       settingsPanel.append('<div class="feature-settings-empty"></div>');
     }
