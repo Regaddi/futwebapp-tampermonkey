@@ -23,6 +23,12 @@ export class PriceManager extends BaseScript {
     };
     this.observer = new MutationObserver(this._mutationHandler.bind(this));
     this.observer.observe(document, obsConfig);
+
+    this.clubDetailObserver = new MutationObserver(this._clubMutationHandler.bind(this));
+    this.clubDetailObserver.observe(document, {
+      attributes: true,
+      subtree: true,
+    });
   }
 
   _mutationHandler(mutationRecords) {
@@ -37,6 +43,18 @@ export class PriceManager extends BaseScript {
     });
   }
 
+  _clubMutationHandler(mutationRecords) {
+    mutationRecords.forEach((mutation) => {
+      const target = $(mutation.target);
+      if (
+        target.hasClass('panelActions') &&
+        target.hasClass('open')
+      ) {
+        this._fillPrices();
+      }
+    });
+  }
+
   onScreenRequest(screenId) {
     super.onScreenRequest(screenId);
   }
@@ -44,6 +62,7 @@ export class PriceManager extends BaseScript {
   deactivate(state) {
     super.deactivate(state);
     this.observer.disconnect();
+    this.clubDetailObserver.disconnect();
   }
 
   _fillPrices() {
@@ -103,38 +122,52 @@ export class PriceManager extends BaseScript {
   }
 
   static _isPlayerContract(item, color) {
+    if (item.subtype !== 201) return false; // player contract cards
+    const data = item._staticData;
+    const {
+      bronzeBoost: b,
+      silverBoost: s,
+      goldBoost: g,
+    } = data;
     switch (color) {
       case 'bronze':
-        return item.type === 'contract' && item._staticData.bronzeBoost === 8 && item._staticData.silverBoost === 2;
+        return item.type === 'contract' && b === 8 && s === 2 && g === 1;
       case 'bronze-rare':
-        return item.type === 'contract' && item._staticData.bronzeBoost === 15 && item._staticData.silverBoost === 6;
+        return item.type === 'contract' && b === 15 && s === 6 && g === 3;
       case 'silver':
-        return item.type === 'contract' && item._staticData.silverBoost === 10 && item._staticData.bronzeBoost === 10;
+        return item.type === 'contract' && b === 10 && s === 10 && g === 8;
       case 'silver-rare':
-        return item.type === 'contract' && item._staticData.silverBoost === 24 && item._staticData.bronzeBoost === 20;
+        return item.type === 'contract' && b === 20 && s === 24 && g === 18;
       case 'gold':
-        return item.type === 'contract' && item._staticData.goldBoost === 13 && item._staticData.silverBoost === 11;
+        return item.type === 'contract' && b === 15 && s === 11 && g === 13;
       case 'gold-rare':
-        return item.type === 'contract' && item._staticData.goldBoost === 28 && item._staticData.silverBoost === 24;
+        return item.type === 'contract' && b === 28 && s === 24 && g === 28;
       default:
         return false;
     }
   }
 
   static _isManagerContract(item, color) {
+    if (item.subtype !== 202) return false; // manager contract cards
+    const data = item._staticData;
+    const {
+      bronzeBoost: b,
+      silverBoost: s,
+      goldBoost: g,
+    } = data;
     switch (color) {
       case 'bronze':
-        return item.type === 'contract' && item._staticData.bronzeBoost === 8 && item._staticData.silverBoost === 2;
+        return item.type === 'contract' && b === 8 && s === 2 && g === 1;
       case 'bronze-rare':
-        return item.type === 'contract' && item._staticData.bronzeBoost === 15 && item._staticData.silverBoost === 6;
+        return item.type === 'contract' && b === 15 && s === 6 && g === 3;
       case 'silver':
-        return item.type === 'contract' && item._staticData.silverBoost === 10 && item._staticData.bronzeBoost === 8;
+        return item.type === 'contract' && b === 8 && s === 10 && g === 8;
       case 'silver-rare':
-        return item.type === 'contract' && item._staticData.silverBoost === 24 && item._staticData.bronzeBoost === 18;
+        return item.type === 'contract' && b === 18 && s === 24 && g === 18;
       case 'gold':
-        return item.type === 'contract' && item._staticData.goldBoost === 13 && item._staticData.silverBoost === 11;
+        return item.type === 'contract' && b === 11 && s === 11 && g === 13;
       case 'gold-rare':
-        return item.type === 'contract' && item._staticData.goldBoost === 28 && item._staticData.silverBoost === 24;
+        return item.type === 'contract' && b === 24 && s === 24 && g === 28;
       default:
         return false;
     }
