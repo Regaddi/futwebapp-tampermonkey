@@ -136,7 +136,7 @@ export class PriceManagerSettings extends SettingsEntry {
     delete settings.isActive;
 
     return `
-    <em>Here you can configure automatic transfer market prices. Add the consumables you want to manage using the dropdown and the "Add" button.</em>
+    <em class="pm-info">Here you can configure automatic transfer market prices. Add the consumables you want to manage using the dropdown and the "Add" button.</em>
     <div class="pm-add">
       <select class="pm-select" name="type">
         <option value="">Select</option>
