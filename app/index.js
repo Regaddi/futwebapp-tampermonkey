@@ -31,6 +31,9 @@ import {
   ClubInfoSettings,
 } from './club';
 */
+import {
+  PriceManagerSettings,
+} from './price-manager';
 
 window.onPageNavigation = new UTObservable();
 window.currentPage = '';
@@ -77,6 +80,7 @@ services.Authentication._oAuthentication.observe(
     settings.registerEntry(new FutbinSettings());
     settings.registerEntry(new InstantBinConfirmSettings());
     // settings.registerEntry(new ClubInfoSettings());
+    settings.registerEntry(new PriceManagerSettings());
 
     initSettingsScreen(settings);
   },
