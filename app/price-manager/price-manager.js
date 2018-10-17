@@ -80,7 +80,8 @@ export class PriceManager extends BaseScript {
 
     const item = quicklistPanel._item;
 
-    const type = Object.keys(validTypes).find(key => settings[key] && validTypes[key].itemValidator(item));
+    const type = Object.keys(validTypes)
+      .find(key => settings[key] && validTypes[key].itemValidator(item));
 
     if (item && type) {
       const { bid, bin } = settings[type];
