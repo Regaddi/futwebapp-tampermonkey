@@ -85,7 +85,7 @@ export class PriceManager extends BaseScript {
           bid = parseInt(settings[`pm-${state}-player-contract-bid`], 10);
           bin = parseInt(settings[`pm-${state}-player-contract-bin`], 10);
         }
-        if (settings[`pm-${state}-player-contract-rare`] && PriceManager._isPlayerContract(item, `${state}-rare`)) {
+        if (settings[`pm-${state}-player-contract-rare`] && PriceManager._isPlayerContract(item, state, true)) {
           bid = parseInt(settings[`pm-${state}-player-contract-rare-bid`], 10);
           bin = parseInt(settings[`pm-${state}-player-contract-rare-bin`], 10);
         }
@@ -93,7 +93,7 @@ export class PriceManager extends BaseScript {
           bid = parseInt(settings[`pm-${state}-manager-contract-bid`], 10);
           bin = parseInt(settings[`pm-${state}-manager-contract-bin`], 10);
         }
-        if (settings[`pm-${state}-manager-contract-rare`] && PriceManager._isManagerContract(item, `${state}-rare`)) {
+        if (settings[`pm-${state}-manager-contract-rare`] && PriceManager._isManagerContract(item, state, true)) {
           bid = parseInt(settings[`pm-${state}-manager-contract-rare-bid`], 10);
           bin = parseInt(settings[`pm-${state}-manager-contract-rare-bin`], 10);
         }
@@ -101,7 +101,7 @@ export class PriceManager extends BaseScript {
           bid = parseInt(settings[`pm-${state}-player-fitness-bid`], 10);
           bin = parseInt(settings[`pm-${state}-player-fitness-bin`], 10);
         }
-        if (settings[`pm-${state}-player-fitness`] && PriceManager._isFitnessCard(item, `${state}-rare`)) {
+        if (settings[`pm-${state}-team-fitness`] && PriceManager._isFitnessCard(item, state, true)) {
           bid = parseInt(settings[`pm-${state}-team-fitness-bid`], 10);
           bin = parseInt(settings[`pm-${state}-team-fitness-bin`], 10);
         }
@@ -121,75 +121,36 @@ export class PriceManager extends BaseScript {
     }
   }
 
-  static _isPlayerContract(item, color) {
-    if (item.subtype !== 201 || item.type !== 'contract') return false; // player contract cards
-    const data = item._staticData;
-    const {
-      bronzeBoost: b,
-      silverBoost: s,
-      goldBoost: g,
-    } = data;
+  static _isPlayerContract(item, color, rare = false) {
+    if (!item.isContract() || item.isRare() !== rare) return false;
+
     switch (color) {
-      case 'bronze':
-        return b === 8 && s === 2 && g === 1;
-      case 'bronze-rare':
-        return b === 15 && s === 6 && g === 3;
-      case 'silver':
-        return b === 10 && s === 10 && g === 8;
-      case 'silver-rare':
-        return b === 20 && s === 24 && g === 18;
-      case 'gold':
-        return b === 15 && s === 11 && g === 13;
-      case 'gold-rare':
-        return b === 28 && s === 24 && g === 28;
-      default:
-        return false;
+      case 'bronze': return item.isBronzeRating();
+      case 'silver': return item.isSilverRating();
+      case 'gold': return item.isGoldRating();
+      default: return false;
     }
   }
 
-  static _isManagerContract(item, color) {
-    if (item.subtype !== 202 || item.type !== 'contract') return false; // manager contract cards
-    const data = item._staticData;
-    const {
-      bronzeBoost: b,
-      silverBoost: s,
-      goldBoost: g,
-    } = data;
+  static _isManagerContract(item, color, rare = false) {
+    if (!item.isManagerContract() || item.isRare() !== rare) return false;
+
     switch (color) {
-      case 'bronze':
-        return b === 8 && s === 2 && g === 1;
-      case 'bronze-rare':
-        return b === 15 && s === 6 && g === 3;
-      case 'silver':
-        return b === 8 && s === 10 && g === 8;
-      case 'silver-rare':
-        return b === 18 && s === 24 && g === 18;
-      case 'gold':
-        return b === 11 && s === 11 && g === 13;
-      case 'gold-rare':
-        return b === 24 && s === 24 && g === 28;
-      default:
-        return false;
+      case 'bronze': return item.isBronzeRating();
+      case 'silver': return item.isSilverRating();
+      case 'gold': return item.isGoldRating();
+      default: return false;
     }
   }
 
-  static _isFitnessCard(item, color) {
-    if (item.type !== 'health') return false;
+  static _isFitnessCard(item, color, rare = false) {
+    if (!item.isFitness() || item.isRare() !== rare) return false;
+
     switch (color) {
-      case 'bronze':
-        return item._staticData.amount === 20 && item.rating === 55;
-      case 'bronze-rare':
-        return item._staticData.amount === 10 && item.rating === 55;
-      case 'silver':
-        return item._staticData.amount === 40 && item.rating === 70;
-      case 'silver-rare':
-        return item._staticData.amount === 20 && item.rating === 70;
-      case 'gold':
-        return item._staticData.amount === 60 && item.rating === 80;
-      case 'gold-rare':
-        return item._staticData.amount === 30 && item.rating === 80;
-      default:
-        return false;
+      case 'bronze': return item.isBronzeRating();
+      case 'silver': return item.isSilverRating();
+      case 'gold': return item.isGoldRating();
+      default: return false;
     }
   }
 }
