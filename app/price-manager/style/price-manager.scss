@@ -1,0 +1,50 @@
+#settingspanel {
+    .pm-select {
+        background-color: #fff;
+    }
+    .pm-add {
+        align-items: stretch;
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-start;
+    }
+    .pm-add-btn {
+        margin-left: 10px;
+    }
+    .pm-list {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        margin-top: 20px;
+    }
+    .pm-setting {
+        align-items: stretch;
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: flex-start;
+        width: 50%;
+    }
+    .pm-setting-label {
+        flex-basis: 100%;
+    }
+    .pm-bid,
+    .pm-bin {
+        width: 40%;
+    }
+    .pm-remove-btn {
+        font-size: 1.4em;
+        &:before {
+            content: "\f11c";
+            font-family: UltimateTeam-Icons;
+        }
+    }
+    select,
+    input {
+        border-radius: 0;
+        font-family: UltimateTeamCondensed,sans-serif;
+        font-size: 1em;
+        font-weight: 400;
+        padding: 0 .5em;
+    }
+}

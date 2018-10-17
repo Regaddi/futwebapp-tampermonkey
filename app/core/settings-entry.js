@@ -10,6 +10,8 @@ export class SettingsEntry {
     this.settings = [];
   }
 
+  customSettingsUIHandler = null;
+
   toggle() {
     this.isActive = !this.isActive;
 

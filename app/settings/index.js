@@ -127,6 +127,10 @@ export default (settings) => {
       settingsPanel.append('<div class="feature-settings-empty"></div>');
     }
 
+    if (typeof entry.customSettingsUIHandler === 'function') {
+      entry.customSettingsUIHandler(settingsPanel.children().last());
+    }
+
     $(`[data-feature-id='${entry.id}']`).on('click', () => {
       settings.toggleEntry(entry.id);
       $(`[data-feature-settings='${entry.id}']`).toggle();
