@@ -122,7 +122,7 @@ export class PriceManager extends BaseScript {
   }
 
   static _isPlayerContract(item, color) {
-    if (item.subtype !== 201) return false; // player contract cards
+    if (item.subtype !== 201 || item.type !== 'contract') return false; // player contract cards
     const data = item._staticData;
     const {
       bronzeBoost: b,
@@ -131,24 +131,24 @@ export class PriceManager extends BaseScript {
     } = data;
     switch (color) {
       case 'bronze':
-        return item.type === 'contract' && b === 8 && s === 2 && g === 1;
+        return b === 8 && s === 2 && g === 1;
       case 'bronze-rare':
-        return item.type === 'contract' && b === 15 && s === 6 && g === 3;
+        return b === 15 && s === 6 && g === 3;
       case 'silver':
-        return item.type === 'contract' && b === 10 && s === 10 && g === 8;
+        return b === 10 && s === 10 && g === 8;
       case 'silver-rare':
-        return item.type === 'contract' && b === 20 && s === 24 && g === 18;
+        return b === 20 && s === 24 && g === 18;
       case 'gold':
-        return item.type === 'contract' && b === 15 && s === 11 && g === 13;
+        return b === 15 && s === 11 && g === 13;
       case 'gold-rare':
-        return item.type === 'contract' && b === 28 && s === 24 && g === 28;
+        return b === 28 && s === 24 && g === 28;
       default:
         return false;
     }
   }
 
   static _isManagerContract(item, color) {
-    if (item.subtype !== 202) return false; // manager contract cards
+    if (item.subtype !== 202 || item.type !== 'contract') return false; // manager contract cards
     const data = item._staticData;
     const {
       bronzeBoost: b,
@@ -157,36 +157,37 @@ export class PriceManager extends BaseScript {
     } = data;
     switch (color) {
       case 'bronze':
-        return item.type === 'contract' && b === 8 && s === 2 && g === 1;
+        return b === 8 && s === 2 && g === 1;
       case 'bronze-rare':
-        return item.type === 'contract' && b === 15 && s === 6 && g === 3;
+        return b === 15 && s === 6 && g === 3;
       case 'silver':
-        return item.type === 'contract' && b === 8 && s === 10 && g === 8;
+        return b === 8 && s === 10 && g === 8;
       case 'silver-rare':
-        return item.type === 'contract' && b === 18 && s === 24 && g === 18;
+        return b === 18 && s === 24 && g === 18;
       case 'gold':
-        return item.type === 'contract' && b === 11 && s === 11 && g === 13;
+        return b === 11 && s === 11 && g === 13;
       case 'gold-rare':
-        return item.type === 'contract' && b === 24 && s === 24 && g === 28;
+        return b === 24 && s === 24 && g === 28;
       default:
         return false;
     }
   }
 
   static _isFitnessCard(item, color) {
+    if (item.type !== 'health') return false;
     switch (color) {
       case 'bronze':
-        return item.type === 'health' && item._staticData.amount === 20 && item.rating === 55;
+        return item._staticData.amount === 20 && item.rating === 55;
       case 'bronze-rare':
-        return item.type === 'health' && item._staticData.amount === 10 && item.rating === 55;
+        return item._staticData.amount === 10 && item.rating === 55;
       case 'silver':
-        return item.type === 'health' && item._staticData.amount === 40 && item.rating === 70;
+        return item._staticData.amount === 40 && item.rating === 70;
       case 'silver-rare':
-        return item.type === 'health' && item._staticData.amount === 20 && item.rating === 70;
+        return item._staticData.amount === 20 && item.rating === 70;
       case 'gold':
-        return item.type === 'health' && item._staticData.amount === 60 && item.rating === 80;
+        return item._staticData.amount === 60 && item.rating === 80;
       case 'gold-rare':
-        return item.type === 'health' && item._staticData.amount === 30 && item.rating === 80;
+        return item._staticData.amount === 30 && item.rating === 80;
       default:
         return false;
     }
