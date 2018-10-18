@@ -20,17 +20,34 @@
         flex-direction: row;
         flex-wrap: wrap;
         margin-top: 20px;
+        &.dragging .pm-setting * {
+            pointer-events: none;
+        }
     }
     .pm-setting {
         align-items: stretch;
+        border: 1px dashed transparent;
         display: flex;
         flex-direction: row;
         flex-wrap: wrap;
         justify-content: flex-start;
+        padding: 5px;
+        transition: border-color 300ms ease;
         width: 50%;
+        &.pm-drag-over {
+            border-color: #000;
+        }
+    }
+    $handle-width: 30px;
+    .pm-setting-handle {
+        cursor: move;
+        width: $handle-width;
+        &:before {
+            content: '≡'
+        }
     }
     .pm-setting-label {
-        flex-basis: 100%;
+        flex-basis: calc(100% - #{$handle-width});
     }
     .pm-bid,
     .pm-bin {
