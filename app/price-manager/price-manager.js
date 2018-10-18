@@ -78,22 +78,26 @@ export class PriceManager extends BaseScript {
       .getCurrentController()
       ._rightController._currentController._quickListPanel;
 
+    if (!quicklistPanel) return;
+
     const item = quicklistPanel._item;
+
+    if (!item) return;
 
     const type = Object.keys(validTypes)
       .find(key => settings[key] && validTypes[key].itemValidator(item));
 
-    if (item && type) {
-      const { bid, bin } = settings[type];
-      // sets the values when the quicklistpanel hasn't been initialized
-      const auction = quicklistPanel._item._auction;
-      if (auction.tradeState !== 'active') {
-        auction.startingBid = bid;
-        auction.buyNowPrice = bin;
-        quicklistPanel._item.setAuctionData(auction);
-      }
-      quicklistPanel._view._bidNumericStepper.value = bid;
-      quicklistPanel._view._buyNowNumericStepper.value = bin;
+    if (!type) return;
+
+    const { bid, bin } = settings[type];
+    // sets the values when the quicklistpanel hasn't been initialized
+    const auction = quicklistPanel._item._auction;
+    if (auction.tradeState !== 'active') {
+      auction.startingBid = bid;
+      auction.buyNowPrice = bin;
+      quicklistPanel._item.setAuctionData(auction);
     }
+    quicklistPanel._view._bidNumericStepper.value = bid;
+    quicklistPanel._view._buyNowNumericStepper.value = bin;
   }
 }
