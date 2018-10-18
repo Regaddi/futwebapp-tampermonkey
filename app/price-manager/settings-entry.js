@@ -246,7 +246,7 @@ export class PriceManagerSettings extends SettingsEntry {
       const config = configs[key];
       return `
         <div class="pm-setting" data-key="${key}">
-          <span class="pm-setting-handle" />
+          <span class="pm-setting-handle" title="Drag to customize order" />
           <span class="pm-setting-label">${this.validTypes[key].label}</span>
           <input type="number" class="pm-bid" name="${key}.bid" value="${config.bid}" min="150" step="50" placeholder="Bid Price" />
           <input type="number" class="pm-bin" name="${key}.bin" value="${config.bin}" min="200" step="50" placeholder="Buy Now Price" />
