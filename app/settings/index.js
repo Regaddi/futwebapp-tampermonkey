@@ -6,8 +6,7 @@ import { analytics } from '../core';
 import settingsPage from './html/index/settings.html';
 
 function handleFieldChange(entry, setting, e) {
-  const input = $(e.target);
-  if (input.is(':checkbox')) {
+  if (setting.subsettings && setting.subsettings.length > 0) {
     entry.changeValue(setting.key, e.target.checked);
   } else if (setting.type === 'checkbox') {
     entry.changeValue(setting.key, e.target.checked);
@@ -19,9 +18,6 @@ function handleFieldChange(entry, setting, e) {
     setting.callback(e.target.value);
   }
   if (setting.subsettings && setting.subsettings.length > 0) {
-    $(`[data-parent-feature-setting-id='${entry.id}:${setting.key}']`).toggle();
-  }
-  if (setting.groupedSettings && setting.groupedSettings.length > 0) {
     $(`[data-parent-feature-setting-id='${entry.id}:${setting.key}']`).toggle();
   }
 }
@@ -57,33 +53,16 @@ function renderSubsetting(setting, entry) {
   </div>`;
 }
 
-function renderGroupedSettings(group, entry) {
-  const items = group.map((item) => {
-    const inputId = `${entry.id}:${item.key}`;
-    return `<div class="setting-group-item">
-      ${renderLabel(item, inputId, item.type !== 'checkbox')}
-      ${renderInput(item, entry, inputId)}
-      ${renderLabel(item, inputId, item.type === 'checkbox')}
-    </div>`;
-  });
-  return `<div class="setting setting-group">
-    ${items.join('')}
-  </div>`;
-}
-
 function renderSubsettings(entry) {
   let settingsFields = '';
   for (const setting of entry.settings) {
-    if (setting.subsettings.length > 0 || setting.groupedSettings.length > 0) {
+    if (setting.subsettings.length > 0) {
       settingsFields += renderSubsetting(setting, entry);
 
       const settingActive = setting.value ? 'block' : 'none';
       settingsFields += `<div data-parent-feature-setting-id="${entry.id}:${setting.key}" style="display: ${settingActive}">`;
       for (const subsetting of setting.subsettings) {
         settingsFields += renderSubsetting(subsetting, entry);
-      }
-      for (const group of setting.groupedSettings) {
-        settingsFields += renderGroupedSettings(group, entry);
       }
       settingsFields += '</div>';
     } else {
@@ -100,13 +79,6 @@ function renderSubsettings(entry) {
       $(`[data-feature-setting-id='${entry.id}:${subsetting.key}']`, panel).on('change', (e) => {
         handleFieldChange(entry, subsetting, e);
       });
-    }
-    for (const group of setting.groupedSettings) {
-      for (const item of group) {
-        $(`[data-feature-setting-id='${entry.id}:${item.key}']`, panel).on('change', (e) => {
-          handleFieldChange(entry, item, e);
-        });
-      }
     }
   }
   return panel;
